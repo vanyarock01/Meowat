@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from urllib.request import urlretrieve
 
 
 def get_url_list(html):
@@ -15,19 +16,6 @@ def get_id_list(html):
     return [li['id'] for li in soup.findAll('li')]
 
 
-def write_base(file_id, file_name):
-    f = open(file_name, 'a')
-    f.write(file_id + ' ')
-    f.close()
-
-
-def read_base(file_name):
-    f = open(file_name)
-    res = f.read().split()
-    f.close()
-    return res
-
-
 # Link page algorithm
 
 # https://yande.re/post?tags=                  | main
@@ -39,8 +27,18 @@ def page_url_linker(number, tag):
     return 'https://yande.re/post?page=' + number + '&tags=' + tag
 
 
-def find_id(file_id, file_name):
-    if file_id in read_base(file_name):
+# Seriously, so you can define a blank page
+
+empty_page = '<p>Nobody here but us chickens!</p>'
+
+
+def if_empty(html):
+    if empty_page in str(html):
         return True
     else:
         return False
+
+
+def image_download(url):
+    destination = 'D:\''+ url.split('/')[-1]
+    urlretrieve(url, destination)
