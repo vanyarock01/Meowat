@@ -2,24 +2,21 @@ import urllib.request
 import digger
 
 
-# Link page algorithm
 
-# https://yande.re/post?tags=                  | main
-# https://yande.re/post?page=1&tags=           | also main
-# https://yande.re/post?page=2&tags=vocaloid   | search pictures by tegs vocaloid in second page
-# https://yande.re/post?tags=vocaloid+gumi+    | search pictures by tegs vocaloid & gumi
-
-
-empty_page ='<p>Nobody here but us chickens!</p>'
-
+#Seriously, so you can define a blank page
+empty_page = '<p>Nobody here but us chickens!</p>'
+base_name = 'id_base.txt'
 tags = input()
-link = "https://yande.re/post?tags=" + tags
-
+link = digger.page_url_linker('1', tags)
+print(link)
 html = urllib.request.urlopen(link).read()
 
-
-if empty_page in str(html):
-    print ('empty page')
+if  empty_page in str(html):
+    print('empty page')
 else:
     url_list = digger.get_url_list(html)
     id_list = digger.get_id_list(html)
+
+    digger.write_base(id_list[1], base_name)
+    short = digger.read_base(base_name)
+    print(digger.find_id(id_list[10],base_name))
