@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import urllib.request
-
+import re
 
 
 # https://yande.re/post?tags=                  | main
@@ -16,5 +16,14 @@ with urllib.request.urlopen(link) as url:
 
 
 soup = BeautifulSoup(html, 'html.parser')
+get = soup.findAll('ul', id="post-list-posts")
+
+
 full_img_links = {a['href'] for a in soup.findAll('a', {"class": "directlink largeimg"})}
 print(full_img_links)
+soup = BeautifulSoup(str(get), 'html.parser')
+#ul id="post-list-posts"
+#print (get.find_all("li", text="creator-id-"))
+post_base = soup.li['id']
+post_base = {li['id'] for li in soup.findAll('li')}
+print (post_base)
