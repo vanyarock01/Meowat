@@ -1,27 +1,7 @@
+
 from bs4 import BeautifulSoup
 from urllib.request import urlretrieve
 
-
-def get_url_list(html):
-    """ Function for getting all list on full size url on picture for this page"""
-    soup = BeautifulSoup(html, 'html.parser')
-    return [a['href'] for a in soup.findAll('a', {"class": "directlink largeimg"})]
-
-
-def get_id_list(html):
-    """ Function for getting all list of id picture for this page"""
-    soup = BeautifulSoup(html, 'html.parser')
-    get_id = soup.findAll('ul', id="post-list-posts")
-    soup = BeautifulSoup(str(get_id), 'html.parser')
-    return [li['id'] for li in soup.findAll('li')]
-
-
-# Link page algorithm
-
-# https://yande.re/post?tags=                  | main
-# https://yande.re/post?page=1&tags=           | also main
-# https://yande.re/post?page=2&tags=vocaloid   | search pictures by tegs vocaloid in second page
-# https://yande.re/post?tags=vocaloid+gumi+    | search pictures by tegs vocaloid & gumi
 
 def page_url_linker(number, tag):
     return 'https://yande.re/post?page=' + number + '&tags=' + tag
@@ -39,6 +19,39 @@ def if_empty(html):
         return False
 
 
-def image_download(url):
-    destination = 'D:\''+ url.split('/')[-1]
+def image_download(url, tag):
+    str = '\\'
+    print(str)
+    destination = 'D:'+ (str) + tag + (str) + url.split('/')[-1]
     urlretrieve(url, destination)
+
+
+def get_url_list(html):
+    """ Function for getting all list on full size url on picture for this page"""
+    soup = BeautifulSoup(html, 'html.parser')
+    return [a['href'] for a in soup.findAll('a', {"class": "directlink largeimg"})]
+
+def get_id(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    return [a['href'] for a in soup.findAll('a', {"class": "thumb"})]
+
+
+def get_id_list(html):
+    """ Function for getting all list of id picture for this page"""
+    soup = BeautifulSoup(html, 'html.parser')
+    get_id = soup.findAll('ul', id="post-list-posts")
+    soup = BeautifulSoup(str(get_id), 'html.parser')
+    id = [li['id'] for li in soup.findAll('li')]
+    i = 0
+    for s in id:
+        id[i] = s[1:]
+        i += 1
+    return id
+
+# Link page algorithm
+
+# https://yande.re/post?tags=                  | main
+# https://yande.re/post?page=1&tags=           | also main
+# https://yande.re/post?page=2&tags=vocaloid   | search pictures by tegs vocaloid in second page
+# https://yande.re/post?tags=vocaloid+gumi+    | search pictures by tegs vocaloid & gumi
+
