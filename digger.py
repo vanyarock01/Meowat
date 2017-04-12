@@ -1,7 +1,8 @@
 
 from bs4 import BeautifulSoup
 from urllib.request import urlretrieve
-
+import urllib.request
+import os
 
 def page_url_linker(number, tag):
     return 'https://yande.re/post?page=' + number + '&tags=' + tag
@@ -55,3 +56,10 @@ def get_id_list(html):
 # https://yande.re/post?page=2&tags=vocaloid   | search pictures by tegs vocaloid in second page
 # https://yande.re/post?tags=vocaloid+gumi+    | search pictures by tegs vocaloid & gumi
 
+
+def get_tag_set(id):
+    link = 'https://yande.re/post/show'+ '/' + id
+    print(link)
+    html = urllib.request.urlopen(link).read()
+    soup = BeautifulSoup(html, 'html.parser')
+    return [li['data-name'] for li in soup.findAll('li', {"class": "tag-link"})]
