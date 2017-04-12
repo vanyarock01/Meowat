@@ -1,7 +1,4 @@
-
 from bs4 import BeautifulSoup
-from urllib.request import urlretrieve
-import urllib.request
 import os
 import requests
 
@@ -21,15 +18,20 @@ def if_empty(html):
         return False
 
 
-def image_download(url, tag):
+def image_download(url, tag, soup):
+    image_name = post_linker(url, soup) + '.' + url.split('.')[-1]
+    destination = "D:\\pictures\\"+ tag + '\\'
 
-    destination = "D:\\pictures\\"+url.split('/')[-1]# os.path.join(tag,url.split('/')[-1]))
-    #destination = os.path.join(destination,url.split('/')[-1])
-    #print (os.path.normpath(destination))
-    p = requests.get(url)
+    if not os.path.exists(destination):
+        os.makedirs(destination, mode=0o777, exist_ok=False)
+
+    destination += image_name
+
+    s = requests.get(url)
     out = open(os.path.normpath(destination), "wb")
-    out.write(p.content)
+    out.write(s.content)
     out.close()
+    return print('Complite', image_name)
 
 
 def get_url_list(html):
@@ -37,11 +39,27 @@ def get_url_list(html):
     soup = BeautifulSoup(html, 'html.parser')
     return [a['href'] for a in soup.findAll('a', {"class": "directlink largeimg"})]
 
-def get_id(html):
-    soup = BeautifulSoup(html, 'html.parser')
-    return [a['href'] for a in soup.findAll('a', {"class": "thumb"})]
+# Link page algorithm
+
+# https://yande.re/post?tags=                  | main
+# https://yande.re/post?page=1&tags=           | also main
+# https://yande.re/post?page=2&tags=vocaloid   | search pictures by tegs vocaloid in second page
+# https://yande.re/post?tags=vocaloid+gumi+    | search pictures by tegs vocaloid & gumi
 
 
+def get_tag_set(soup):
+    return [li['data-name'] for li in soup.findAll('li', {"class": "tag-link"})]
+
+
+def get_id(url):
+    return url.split('/')[-1].split('%20')[1]
+
+
+def post_linker(url,soup):
+    return get_id(url) + ' - ' + str(get_tag_set(soup))[1:-1].replace('\'', '')
+
+
+'''
 def get_id_list(html):
     """ Function for getting all list of id picture for this page"""
     soup = BeautifulSoup(html, 'html.parser')
@@ -53,18 +71,4 @@ def get_id_list(html):
         id[i] = s[1:]
         i += 1
     return id
-
-# Link page algorithm
-
-# https://yande.re/post?tags=                  | main
-# https://yande.re/post?page=1&tags=           | also main
-# https://yande.re/post?page=2&tags=vocaloid   | search pictures by tegs vocaloid in second page
-# https://yande.re/post?tags=vocaloid+gumi+    | search pictures by tegs vocaloid & gumi
-
-
-def get_tag_set(id):
-    link = 'https://yande.re/post/show'+ '/' + id
-    print(link)
-    html = urllib.request.urlopen(link).read()
-    soup = BeautifulSoup(html, 'html.parser')
-    return [li['data-name'] for li in soup.findAll('li', {"class": "tag-link"})]
+'''
