@@ -9,12 +9,10 @@ import bdHandler
 
 config = configparser.RawConfigParser()
 config.read('Regulations.ini')
-print(config.get('parsing', 'base_name'))
-
 
 def page_save():
     page = 1
-    base_name = config.get('parsing', 'base_name')
+    base_name = config.get('base', 'base_name')
     tags = input()
     link = digger.page_url_linker(str(page), tags)
     html = urllib.request.urlopen(link).read()
