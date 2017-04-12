@@ -14,25 +14,20 @@ config.read('Regulations.ini')
 print (config.get('parsing', 'base_name'))
 
 
-'''
-def page_s():
+def page_save():
     page = 1
-    base_name = 'base_date.txt'
+    base_name = config.get('parsing', 'base_name')
     tags = input()
     link = digger.page_url_linker(str(page), tags)
+    html = urllib.request.urlopen(link).read()
+    print (bdHandler.read_base('base_date.txt'))
+    url_list = digger.get_url_list(html)
+    i = 0
+    while i < len(url_list):
 
-config = ConfigParser.RawConfigParser()
-config.read('configuration.cfg')
-print(config.get('parser', 'base_name'))
-#html = urllib.request.urlopen(link).read()
+        bdHandler.write_db(url_list[i],'base_date.txt')
 
-print (bdHandler.read_base('base_date.txt'))
-print(bdHandler.read_base('base_date.txt'))
-url_list = digger.get_url_list(html)
-id_list = digger.get_id(html)
-i = 0
-while i < len(url_list):
-   bdHandler.write_db(url_list[i],'base_date.txt')
-   i += 1
+        digger.image_download(url_list[i],tags)
+        i += 1
 
-'''
+page_save()

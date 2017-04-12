@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.request import urlretrieve
 import urllib.request
 import os
+import requests
 
 def page_url_linker(number, tag):
     return 'https://yande.re/post?page=' + number + '&tags=' + tag
@@ -21,10 +22,14 @@ def if_empty(html):
 
 
 def image_download(url, tag):
-    str = '\\'
-    print(str)
-    destination = 'D:'+ (str) + tag + (str) + url.split('/')[-1]
-    urlretrieve(url, destination)
+
+    destination = "D:\\pictures\\"+url.split('/')[-1]# os.path.join(tag,url.split('/')[-1]))
+    #destination = os.path.join(destination,url.split('/')[-1])
+    #print (os.path.normpath(destination))
+    p = requests.get(url)
+    out = open(os.path.normpath(destination), "wb")
+    out.write(p.content)
+    out.close()
 
 
 def get_url_list(html):
