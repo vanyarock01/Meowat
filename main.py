@@ -22,15 +22,20 @@ def page_save():
 
 
     while i < len(url_list):
-        with timer.Profiler() as p:
-            id = digger.get_id(url_list[i])
-            link = 'https://yande.re/post/show' + '/' + id
-            html = urllib.request.urlopen(link).read()
-            soup = BeautifulSoup(html, 'html.parser')
+        if bdHandler.if_save(url_list[i]):
+            print ('!')
+        else:
+            with timer.Profiler() as p:
 
-            bdHandler.write_db(url_list[i], base_name, soup)
-            digger.image_download(url_list[i], tags, soup)
-            i += 1
+                id = digger.get_id(url_list[i])
+
+                link = 'https://yande.re/post/show' + '/' + id
+                html = urllib.request.urlopen(link).read()
+                soup = BeautifulSoup(html, 'html.parser')
+
+                bdHandler.write_db(url_list[i], base_name, soup, tags)
+                digger.image_download(url_list[i], tags, soup)
+        i += 1
 
 
 page_save()

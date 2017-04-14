@@ -19,7 +19,7 @@ def if_empty(html):
 
 
 def image_download(url, tag, soup):
-    image_name = post_linker(url, soup) + '.' + url.split('.')[-1]
+    image_name = post_linker(url, soup).replace('"', '') + '.' + url.split('.')[-1]
     destination = "D:\\pictures\\"+ tag + '\\'
 
     if not os.path.exists(destination):
@@ -72,3 +72,4 @@ def get_id_list(html):
         i += 1
     return id
 '''
+
