@@ -1,24 +1,34 @@
 from bs4 import BeautifulSoup
-import os
 import requests
+import os
 
 def page_url_linker(number, tag):
     return 'https://yande.re/post?page=' + number + '&tags=' + tag
 
 
 # Seriously, so you can define a blank page
-
 empty_page = '<p>Nobody here but us chickens!</p>'
+not_exist_page = '<h1>Requested page does not exist</h1>'
 
 
 def if_empty(html):
     if empty_page in str(html):
-        return True
-    else:
         return False
+    else:
+        return True
+
+
+def if_exist(html):
+    if not_exist_page in str(html):
+        return False
+    else:
+        return True
 
 
 def image_download(url, tag, soup):
+
+    """Create folder and download into it image"""
+
     image_name = post_linker(url, soup).replace('"', '') + '.' + url.split('.')[-1]
     destination = "D:\\pictures\\"+ tag + '\\'
 
@@ -31,11 +41,13 @@ def image_download(url, tag, soup):
     out = open(os.path.normpath(destination), "wb")
     out.write(s.content)
     out.close()
-    return print('Complite', image_name)
+    return print('Completed', image_name)
 
 
 def get_url_list(html):
+
     """ Function for getting all list on full size url on picture for this page"""
+
     soup = BeautifulSoup(html, 'html.parser')
     return [a['href'] for a in soup.findAll('a', {"class": "directlink largeimg"})]
 
@@ -58,18 +70,4 @@ def get_id(url):
 def post_linker(url,soup):
     return get_id(url) + ' - ' + str(get_tag_set(soup))[1:-1].replace('\'', '')
 
-
-'''
-def get_id_list(html):
-    """ Function for getting all list of id picture for this page"""
-    soup = BeautifulSoup(html, 'html.parser')
-    get_id = soup.findAll('ul', id="post-list-posts")
-    soup = BeautifulSoup(str(get_id), 'html.parser')
-    id = [li['id'] for li in soup.findAll('li')]
-    i = 0
-    for s in id:
-        id[i] = s[1:]
-        i += 1
-    return id
-'''
 

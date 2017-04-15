@@ -1,7 +1,8 @@
-import os
 import bdHandler
+import os
 
-def __search__():
+
+def find_move():
     res = os.listdir(path="D:\\pictures\\")
     print(res)
     base = bdHandler.read_base('base_date.txt')
@@ -15,4 +16,5 @@ def __search__():
                 print(id + '-' + base[id])
                 bdHandler.str_replace(id + '-' + base[id], id + '-' + folder)
     print (base)
-__search__()
+find_move()
+

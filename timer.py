@@ -1,7 +1,7 @@
 import time
 
 
-class Profiler(object):
+class count(object):
     def __enter__(self):
         self._startTime = time.time()
 
