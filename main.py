@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import urllib.request
 import configparser
 import bdHandler
+import searcher
 import digger
 import timer
 
@@ -9,8 +10,13 @@ config = configparser.RawConfigParser()
 config.read('Regulations.ini')
 post_link = config.get('base', 'link')
 
-tag = input('Enter tag for download: ')
-page = input('Enter start page: ')
+
+def main():
+    searcher.find_move()
+    tag = input('Enter tag for download: ')
+    page = input('Enter start page: ')
+    return page_save(tag, page)
+
 
 def page_save(tag, page):
     link = 'https://yande.re/post?page=' + str(page) + '&tags=' + tag
@@ -30,11 +36,12 @@ def page_save(tag, page):
                     link = post_link + '/' + id
                     html = urllib.request.urlopen(link).read()
                     soup = BeautifulSoup(html, 'html.parser')
-                    bdHandler.write_db(url_list[num_pic], tag)
                     digger.image_download(url_list[num_pic], tag, soup)
+                    bdHandler.write_db(url_list[num_pic], tag)
             num_pic += 1
         print('Page №:', page, ' download')
         return page_save(tag,int(page) + 1)
     else:
         print('All picture save')
-page_save(tag,page)
+
+main()
